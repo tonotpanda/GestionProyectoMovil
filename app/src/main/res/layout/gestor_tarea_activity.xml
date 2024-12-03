@@ -12,30 +12,35 @@
         android:id="@+id/projectName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/rockwell"
+        android:padding="16dp"
         android:text="Nombre del Proyecto"
         android:textSize="18sp"
-        android:padding="16dp"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/projectDates"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Fecha inicio: \nFecha fin:"
-        android:textSize="16sp"
+        android:fontFamily="@font/rockwell"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:paddingBottom="8dp" />
+        android:paddingBottom="8dp"
+        android:text="Fecha inicio: \nFecha fin:"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/projectSupervisor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Supervisado por: "
-        android:textSize="16sp"
+        android:fontFamily="@font/rockwell"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:paddingBottom="16dp" />
+        android:paddingBottom="16dp"
+        android:text="Supervisado por: "
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <!-- Contenedor para las columnas -->
     <androidx.recyclerview.widget.RecyclerView
@@ -43,7 +48,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:orientation="horizontal" />
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 </LinearLayout>
