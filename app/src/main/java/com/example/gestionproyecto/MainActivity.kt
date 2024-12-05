@@ -20,6 +20,8 @@ class MainActivity : AppCompatActivity() {
 
     val keyDecrypt = "0123456789012345" // La clave de desencriptado (debe tener 16 caracteres para AES)
 
+    var decryptedData: String? = null // Guardar los datos desencriptados del archivo JSON
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -35,76 +37,78 @@ class MainActivity : AppCompatActivity() {
             intent.type = "application/json"  // Filtrar para archivos JSON
             startActivityForResult(intent, 1)  // Código de solicitud para elegir el archivo
         }
+
+        // Manejar el clic en el botón de inicio de sesión
+        botonIniciarSesion.setOnClickListener {
+            val usuario = nombreUsuario.text.toString()
+            val contrasena = contrasenaUsuario.text.toString()
+
+            // Verificar si los datos están completos y si el archivo JSON ha sido cargado
+            if (usuario.isNotEmpty() && contrasena.isNotEmpty()) {
+                if (decryptedData != null) {
+                    validateUser(usuario, contrasena)
+                } else {
+                    Toast.makeText(this, "Por favor selecciona un archivo JSON primero.", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this, "Por favor ingresa usuario y contraseña.", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
-    // Este método maneja la selección del archivo JSON y lo desencripta
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1 && resultCode == RESULT_OK) {
             val selectedUri: Uri? = data?.data
             if (selectedUri != null) {
-                val decryptedData = decryptFile(selectedUri)
-                showDecryptedData(decryptedData)
+                decryptedData = decryptFile(selectedUri)
+                if (decryptedData != "Error al leer el archivo") {
+                    Toast.makeText(this, "Archivo JSON cargado correctamente.", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, decryptedData, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
 
-    // Desencriptar el archivo JSON
     fun decryptFile(uri: Uri): String {
-        // Leer el archivo en base64 desde el URI
         val inputStream: InputStream? = contentResolver.openInputStream(uri)
-        val encryptedData = inputStream?.readBytes()  // Leer todos los bytes del archivo
+        val encryptedData = inputStream?.readBytes()
 
-        // Desencriptar los datos
         return if (encryptedData != null) {
             val encryptedString = String(encryptedData)
-            decrypt(encryptedString, keyDecrypt)  // Desencriptar la cadena en Base64
+            decrypt(encryptedString, keyDecrypt)
         } else {
             "Error al leer el archivo"
         }
     }
 
-    // Desencriptar una cadena de texto
     fun decrypt(encryptedData: String, key: String): String {
         try {
             val keySpec = SecretKeySpec(key.toByteArray(), "AES")
-
-            // Extraemos el IV de los primeros 16 bytes del texto cifrado
             val decodedData = Base64.decode(encryptedData, Base64.DEFAULT)
-            val iv = ByteArray(16)  // IV de 16 bytes
+            val iv = ByteArray(16)
             System.arraycopy(decodedData, 0, iv, 0, iv.size)
-
-            // Los datos cifrados se encuentran después del IV
             val cipherText = ByteArray(decodedData.size - iv.size)
             System.arraycopy(decodedData, iv.size, cipherText, 0, cipherText.size)
 
-            val ivSpec = IvParameterSpec(iv)  // Usamos el IV extraído para la desencriptación
-
-            // Configurar el cipher para desencriptar
+            val ivSpec = IvParameterSpec(iv)
             val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
             cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec)
 
-            // Desencriptamos los datos
             val decryptedBytes = cipher.doFinal(cipherText)
-            val decryptedString = String(decryptedBytes)
-
-            // Imprime el resultado desencriptado para depuración
-            return decryptedString
+            return String(decryptedBytes)
         } catch (e: Exception) {
             e.printStackTrace()
-            return "Error de desencriptación: ${e.message}"
+            return "Error de desencriptación"
         }
     }
 
-    // Mostrar el contenido del archivo desencriptado
-    fun showDecryptedData(decryptedData: String) {
+    // Validar el usuario y la contraseña
+    fun validateUser(usuarioInput: String, contrasenaInput: String) {
         try {
-            Log.d("DecryptedContent", decryptedData)
-
-            // Intentar parsear el JSON
             val jsonArray = JSONArray(decryptedData)
 
-            // Iterar sobre los objetos JSON y desencriptar la contraseña
             for (i in 0 until jsonArray.length()) {
                 val jsonObject = jsonArray.getJSONObject(i)
                 val usuario = jsonObject.getString("UsuarioNombre")
@@ -114,29 +118,54 @@ class MainActivity : AppCompatActivity() {
                 // Desencriptar la contraseña
                 val decryptedPassword = decryptPassword(encryptedPassword)
 
-                // Mostrar los datos de usuario con la contraseña desencriptada
-                val displayData = "Usuario: $usuario\nContraseña: $decryptedPassword\nEs Desarrollador: $esDesarrollador"
-                Toast.makeText(this, displayData, Toast.LENGTH_LONG).show()
+                // Comprobar si el usuario y la contraseña coinciden
+                if (usuario == usuarioInput && decryptedPassword == contrasenaInput) {
+                    if (esDesarrollador) {
+                        // Si es desarrollador, hacer el Intent hacia la siguiente actividad
+                        val intent = Intent(this, LeerJsonActivity::class.java)
+                        startActivity(intent)
+                        finish()  // Cerrar la actividad actual
+                        return  // Salir del ciclo
+                    } else {
+                        Toast.makeText(this, "No tienes acceso de desarrollador.", Toast.LENGTH_SHORT).show()
+                        return
+                    }
+                }
             }
 
+            // Si no se encuentra el usuario o la contraseña es incorrecta
+            Toast.makeText(this, "Usuario o contraseña incorrectos.", Toast.LENGTH_SHORT).show()
+
         } catch (e: Exception) {
-            Log.e("JSONError", "Error al analizar el JSON: ${e.message}")
-            Toast.makeText(this, "Error al analizar el JSON", Toast.LENGTH_LONG).show()
             e.printStackTrace()
+            Toast.makeText(this, "Error al procesar el archivo.", Toast.LENGTH_SHORT).show()
         }
     }
 
-
-    // Desencriptar el campo "Contraseña" (base64)
+    // Desencriptar la contraseña
     fun decryptPassword(encryptedPassword: String): String {
         try {
-            // Desencriptar la contraseña usando AES
             val decodedPassword = Base64.decode(encryptedPassword, Base64.DEFAULT)
-            return String(decodedPassword)  // Aquí asumo que la contraseña no está encriptada con IV
+
+            val iv = ByteArray(16)
+            System.arraycopy(decodedPassword, 0, iv, 0, iv.size)
+
+            val cipherText = ByteArray(decodedPassword.size - iv.size)
+            System.arraycopy(decodedPassword, iv.size, cipherText, 0, cipherText.size)
+
+            val keySpec = SecretKeySpec(keyDecrypt.toByteArray(), "AES")
+            val ivSpec = IvParameterSpec(iv)
+
+            val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
+            cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec)
+
+            val decryptedBytes = cipher.doFinal(cipherText)
+            return String(decryptedBytes)
         } catch (e: Exception) {
             e.printStackTrace()
             return "Error al desencriptar la contraseña"
         }
     }
-
 }
+
+
