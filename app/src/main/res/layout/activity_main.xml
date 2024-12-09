@@ -28,6 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:layout_marginBottom="24dp"
+            android:fontFamily="@font/rockwell"
             android:text="Inicia Sesión"
             android:textColor="@color/titulo"
             android:textSize="50sp"
@@ -41,6 +42,7 @@
             android:layout_margin="16dp"
             android:focusable="true"
             android:focusableInTouchMode="true"
+            android:fontFamily="@font/merriweather"
             android:hint="Usuario"
             android:inputType="textPersonName"
             android:padding="16dp" />
@@ -53,6 +55,7 @@
             android:layout_margin="16dp"
             android:focusable="true"
             android:focusableInTouchMode="true"
+            android:fontFamily="@font/merriweather"
             android:hint="Contraseña"
             android:importantForAccessibility="yes"
             android:inputType="textPassword"
@@ -65,16 +68,18 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:backgroundTint="@color/botonAcceder"
+            android:fontFamily="@font/merriweather"
             android:text="Acceder"
             android:textColor="@color/white"
             android:textStyle="bold" />
 
-        <!-- Botón para seleccionar el archive JSON -->
         <Button
             android:id="@+id/botonSeleccionarJson"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:fontFamily="@font/merriweather"
+            android:backgroundTint="@color/botonJson"
             android:text="Seleccionar JSON" />
 
     </LinearLayout>
