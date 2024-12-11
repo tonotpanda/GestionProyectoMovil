@@ -80,7 +80,8 @@
             android:layout_marginTop="16dp"
             android:fontFamily="@font/merriweather"
             android:backgroundTint="@color/botonJson"
-            android:text="Seleccionar JSON" />
+            android:text="Seleccionar JSON"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

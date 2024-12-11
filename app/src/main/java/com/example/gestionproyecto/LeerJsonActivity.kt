@@ -6,8 +6,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
-import android.view.View
+import android.util.Base64
 import android.widget.Button
 import android.widget.Toast
 import com.example.gestionproyecto.R
@@ -17,11 +16,18 @@ import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.IOException
+import javax.crypto.Cipher
+import javax.crypto.spec.SecretKeySpec
+import javax.crypto.spec.IvParameterSpec
 
 class LeerJsonActivity : Activity() {
 
     private lateinit var btnSeleccionarJson: Button
     private lateinit var btnSalir: Button
+
+    // Clave y IV de desencriptación (deben ser los mismos usados para encriptar)
+    private val keyDecrypt = "0123456789012345"  // Clave de 16 bytes
+    private val ivDecrypt = "5432109876543210"  // IV de 16 bytes
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,7 +64,8 @@ class LeerJsonActivity : Activity() {
             fileUri?.let {
                 try {
                     val jsonContent = readFile(it) // Leer el contenido del archivo JSON
-                    parseJson(jsonContent) // Parsear el contenido JSON
+                    val jsonDesencriptado = decryptJson(jsonContent) // Desencriptar el JSON
+                    parseJson(jsonDesencriptado) // Parsear el contenido JSON desencriptado
                 } catch (e: IOException) {
                     e.printStackTrace()
                     Toast.makeText(this, "Error al leer el archivo", Toast.LENGTH_SHORT).show()
@@ -81,6 +88,34 @@ class LeerJsonActivity : Activity() {
         return stringBuilder.toString()
     }
 
+    // Función para desencriptar el JSON (AES CBC)
+    private fun decryptJson(encryptedJson: String): String {
+        try {
+            // Decodificar el contenido Base64
+            val encryptedData = Base64.decode(encryptedJson, Base64.DEFAULT)
+
+            // Extraer IV y texto cifrado
+            val iv = IvParameterSpec(ivDecrypt.toByteArray())
+            val cipherText = encryptedData.copyOfRange(16, encryptedData.size) // Excluir el IV de los primeros 16 bytes
+
+            // Crear la clave de desencriptación
+            val keySpec = SecretKeySpec(keyDecrypt.toByteArray(), "AES")
+
+            // Inicializar el cifrador y desencriptar
+            val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
+            cipher.init(Cipher.DECRYPT_MODE, keySpec, iv)
+            val decryptedBytes = cipher.doFinal(cipherText)
+
+            // Convertir los bytes desencriptados a string y retornar
+            return String(decryptedBytes)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(this, "Error al desencriptar el archivo", Toast.LENGTH_SHORT).show()
+            return ""
+        }
+    }
+
+    // Método para parsear el JSON desencriptado
     private fun parseJson(jsonContent: String) {
         try {
             val jsonArray = JSONArray(jsonContent)

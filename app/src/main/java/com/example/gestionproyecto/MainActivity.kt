@@ -1,5 +1,7 @@
 package com.example.gestionproyecto
 
+
+
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -14,7 +16,7 @@ import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
 import javax.crypto.spec.IvParameterSpec
 import org.json.JSONArray
-import org.json.JSONObject
+
 
 class MainActivity : AppCompatActivity() {
 
