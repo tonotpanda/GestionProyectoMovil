@@ -7,7 +7,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class ColumnAdapter(private val columnas: List<List<String>>) : RecyclerView.Adapter<ColumnAdapter.ColumnViewHolder>() {
+class ColumnAdapter(
+    private val columnas: MutableList<MutableList<String>>,
+    private val onTaskClick: (String, Int) -> Unit  // Acepta la función onTaskClick
+) : RecyclerView.Adapter<ColumnAdapter.ColumnViewHolder>() {
 
     inner class ColumnViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val columnTitle: TextView = itemView.findViewById(R.id.columnTitle)
@@ -30,8 +33,8 @@ class ColumnAdapter(private val columnas: List<List<String>>) : RecyclerView.Ada
         }
         holder.columnTitle.text = columnName
 
-        // Configurar un RecyclerView dentro de cada columna
-        val taskAdapter = TareaAdapter(columnas[position])
+        // Configurar el RecyclerView para cada columna con las tareas correspondientes
+        val taskAdapter = TareaAdapter(columnas[position], onTaskClick) // Pasar la función aquí
         holder.recyclerView.layoutManager = LinearLayoutManager(holder.itemView.context)
         holder.recyclerView.adapter = taskAdapter
     }
@@ -40,3 +43,5 @@ class ColumnAdapter(private val columnas: List<List<String>>) : RecyclerView.Ada
         return columnas.size
     }
 }
+
+

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/move_to_backlog"
+        android:title="Mover a Backlog" />
+    <item
+        android:id="@+id/move_to_todo"
+        android:title="Mover a To Do" />
+    <item
+        android:id="@+id/move_to_doing"
+        android:title="Mover a Doing" />
+    <item
+        android:id="@+id/move_to_testing"
+        android:title="Mover a Testing" />
+    <item
+        android:id="@+id/move_to_finished"
+        android:title="Mover a Finished" />
+</menu>
