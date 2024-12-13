@@ -10,3 +10,4 @@ data class Proyecto(
     val fechaInicio: String,
     val fechaFin: String
 ) : Serializable
+

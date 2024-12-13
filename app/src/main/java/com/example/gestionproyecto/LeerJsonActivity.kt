@@ -154,7 +154,7 @@ class LeerJsonActivity : Activity() {
 
                 // Enviar los datos a la nueva actividad
                 val intent = Intent(this, GestorTareasActivity::class.java)
-                intent.putExtra("PROYECTO_INFO", proyecto)  // Pasamos el objeto Proyecto
+                intent.putExtra("PROYECTO_INFO", proyecto)  // Asegúrate de que "PROYECTO_INFO" sea correcto
                 startActivity(intent)
             }
 
@@ -168,15 +168,21 @@ class LeerJsonActivity : Activity() {
 
     // Función para convertir JSONArray a una cadena de texto
     private fun getJSONArrayAsString(jsonObject: JSONObject, key: String): String {
-        val jsonArray = jsonObject.getJSONArray(key)
-        val list = mutableListOf<String>()
-        for (i in 0 until jsonArray.length()) {
-            list.add(jsonArray.getString(i))
+        return try {
+            val jsonArray = jsonObject.getJSONArray(key) // Intentamos obtener el JSONArray
+            val list = mutableListOf<String>()
+            for (i in 0 until jsonArray.length()) {
+                list.add(jsonArray.getString(i))
+            }
+            list.joinToString(", ") // Convertimos el JSONArray en una cadena de texto
+        } catch (e: JSONException) {
+            // Si hay un error (lo que significa que el valor no es un JSONArray), lo tratamos como un String
+            jsonObject.getString(key)
         }
-        return list.joinToString(", ")
     }
 
     companion object {
         const val PICK_JSON_FILE = 1
     }
 }
+
