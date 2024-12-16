@@ -44,7 +44,7 @@ class GestorTareasActivity : AppCompatActivity() {
     }
 
     // Función que se llama cuando se hace clic en una tarea
-    private fun onTaskClick(tarea: String, fromColumnIndex: Int) {
+    private fun onTaskClick(tarea: String, fromColumnIndex: Int, taskIndex: Int) {
         // Mostrar un PopupMenu para que el usuario elija la columna
         val popupMenu = PopupMenu(this, findViewById(R.id.recyclerView))
         popupMenu.menuInflater.inflate(R.menu.column_menu, popupMenu.menu)
@@ -70,13 +70,16 @@ class GestorTareasActivity : AppCompatActivity() {
         val fromColumn = columnas[fromColumnIndex]
         val toColumn = columnas[toColumnIndex]
 
-        // Eliminar la tarea de la columna de origen
-        fromColumn.remove(tarea)
+        // Verificar si la tarea ya está en la columna de destino
+        if (!toColumn.contains(tarea)) {
+            // Eliminar la tarea de la columna de origen
+            fromColumn.remove(tarea)
 
-        // Agregar la tarea a la columna de destino
-        toColumn.add(tarea)
+            // Agregar la tarea a la columna de destino
+            toColumn.add(tarea)
 
-        // Notificar al adaptador que se ha movido la tarea
-        (recyclerView.adapter as ColumnAdapter).notifyDataSetChanged()
+            // Notificar que se debe actualizar el RecyclerView
+            (recyclerView.adapter as ColumnAdapter).notifyDataSetChanged()  // Notificar que toda la vista debe actualizarse
+        }
     }
 }
