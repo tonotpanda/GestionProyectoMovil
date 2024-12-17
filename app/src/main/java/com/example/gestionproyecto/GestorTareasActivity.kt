@@ -3,6 +3,7 @@ package com.example.gestionproyecto
 import android.os.Bundle
 import android.widget.PopupMenu
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -45,23 +46,43 @@ class GestorTareasActivity : AppCompatActivity() {
 
     // Función que se llama cuando se hace clic en una tarea
     private fun onTaskClick(tarea: String, fromColumnIndex: Int, taskIndex: Int) {
-        // Mostrar un PopupMenu para que el usuario elija la columna
+        // Mostrar un PopupMenu para que el usuario elija la acción
         val popupMenu = PopupMenu(this, findViewById(R.id.recyclerView))
-        popupMenu.menuInflater.inflate(R.menu.column_menu, popupMenu.menu)
+        popupMenu.menuInflater.inflate(R.menu.main_menu, popupMenu.menu)  // Usamos el menú principal con las opciones "Info Tarea" y "Mover Tarea"
 
         // Lógica para manejar la selección del menú
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.move_to_backlog -> moveTask(tarea, fromColumnIndex, 0)
-                R.id.move_to_todo -> moveTask(tarea, fromColumnIndex, 1)
-                R.id.move_to_doing -> moveTask(tarea, fromColumnIndex, 2)
-                R.id.move_to_testing -> moveTask(tarea, fromColumnIndex, 3)
-                R.id.move_to_finished -> moveTask(tarea, fromColumnIndex, 4)
+                // Opción "Info Tarea" - No hace nada por ahora
+                R.id.info_task -> {
+                    // De momento, no hacemos nada al seleccionar "Info Tarea"
+                    Toast.makeText(this, "Información de la tarea: $tarea", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                // Opción "Mover Tarea" -> Mostrar submenú para mover tarea
+                R.id.move_task -> {
+                    // Mostrar el submenú con las opciones para mover la tarea
+                    val movePopupMenu = PopupMenu(this, findViewById(R.id.recyclerView))
+                    movePopupMenu.menuInflater.inflate(R.menu.column_menu, movePopupMenu.menu)  // Usamos el menú de mover tarea
+
+                    movePopupMenu.setOnMenuItemClickListener { subItem ->
+                        when (subItem.itemId) {
+                            R.id.move_to_backlog -> moveTask(tarea, fromColumnIndex, 0)
+                            R.id.move_to_todo -> moveTask(tarea, fromColumnIndex, 1)
+                            R.id.move_to_doing -> moveTask(tarea, fromColumnIndex, 2)
+                            R.id.move_to_testing -> moveTask(tarea, fromColumnIndex, 3)
+                            R.id.move_to_finished -> moveTask(tarea, fromColumnIndex, 4)
+                        }
+                        true
+                    }
+                    movePopupMenu.show()  // Mostrar el submenú
+                    true
+                }
+                else -> false
             }
-            true
         }
 
-        // Mostrar el menú
+        // Mostrar el menú principal
         popupMenu.show()
     }
 
