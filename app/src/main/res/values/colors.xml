@@ -7,4 +7,11 @@
     <color name="red">#FF0000</color>
     <color name="background">#f2f2f2</color>
     <color name="botonJson">#556080</color>
+
+    // color estado tarea
+    <color name="amarillo">#FFCC00</color>
+    <color name="naranja">#FF8C00</color>
+    <color name="verde">#008000</color>
+
+
 </resources>

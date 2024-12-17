@@ -1,5 +1,6 @@
 package com.example.gestionproyecto
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.PopupMenu
 import android.widget.TextView
@@ -46,24 +47,21 @@ class GestorTareasActivity : AppCompatActivity() {
 
     // Función que se llama cuando se hace clic en una tarea
     private fun onTaskClick(tarea: String, fromColumnIndex: Int, taskIndex: Int) {
-        // Mostrar un PopupMenu para que el usuario elija la acción
         val popupMenu = PopupMenu(this, findViewById(R.id.recyclerView))
-        popupMenu.menuInflater.inflate(R.menu.main_menu, popupMenu.menu)  // Usamos el menú principal con las opciones "Info Tarea" y "Mover Tarea"
+        popupMenu.menuInflater.inflate(R.menu.main_menu, popupMenu.menu)
 
-        // Lógica para manejar la selección del menú
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                // Opción "Info Tarea" - No hace nada por ahora
                 R.id.info_task -> {
-                    // De momento, no hacemos nada al seleccionar "Info Tarea"
-                    Toast.makeText(this, "Información de la tarea: $tarea", Toast.LENGTH_SHORT).show()
+                    // Abrir la actividad TareaDetailActivity con la información de la tarea
+                    val intent = Intent(this, InfoTareaActivity::class.java)
+                    intent.putExtra("TASK_INFO", tarea)  // Enviar la tarea al detalle
+                    startActivity(intent)
                     true
                 }
-                // Opción "Mover Tarea" -> Mostrar submenú para mover tarea
                 R.id.move_task -> {
-                    // Mostrar el submenú con las opciones para mover la tarea
                     val movePopupMenu = PopupMenu(this, findViewById(R.id.recyclerView))
-                    movePopupMenu.menuInflater.inflate(R.menu.column_menu, movePopupMenu.menu)  // Usamos el menú de mover tarea
+                    movePopupMenu.menuInflater.inflate(R.menu.column_menu, movePopupMenu.menu)
 
                     movePopupMenu.setOnMenuItemClickListener { subItem ->
                         when (subItem.itemId) {
@@ -75,16 +73,16 @@ class GestorTareasActivity : AppCompatActivity() {
                         }
                         true
                     }
-                    movePopupMenu.show()  // Mostrar el submenú
+                    movePopupMenu.show()
                     true
                 }
                 else -> false
             }
         }
 
-        // Mostrar el menú principal
         popupMenu.show()
     }
+
 
     // Función que mueve la tarea de una columna a otra
     private fun moveTask(tarea: String, fromColumnIndex: Int, toColumnIndex: Int) {
