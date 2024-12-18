@@ -87,7 +87,7 @@
                 android:layout_marginBottom="8dp"
                 android:backgroundTint="@color/amarillo"
                 android:textColor="@android:color/white"
-                android:text="Amarillo"
+                android:text="Empezando"
                 android:fontFamily="@font/merriweather" />
 
             <Button
@@ -97,7 +97,7 @@
                 android:layout_marginBottom="8dp"
                 android:backgroundTint="@color/naranja"
                 android:textColor="@android:color/white"
-                android:text="Naranja"
+                android:text="En proceso"
                 android:fontFamily="@font/merriweather" />
 
             <Button
@@ -107,7 +107,7 @@
                 android:layout_marginBottom="16dp"
                 android:backgroundTint="@color/verde"
                 android:textColor="@android:color/white"
-                android:text="Verde"
+                android:text="Finalizada"
                 android:fontFamily="@font/merriweather" />
         </LinearLayout>
 
