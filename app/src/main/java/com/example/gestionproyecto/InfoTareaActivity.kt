@@ -18,15 +18,13 @@ class InfoTareaActivity : AppCompatActivity() {
         setContentView(R.layout.task_info)
 
         // Obtener el nombre de la tarea desde el Intent
-        val tarea = intent.getStringExtra("TASK_INFO")
-            ?: return  // Asegurarse de que el valor de la tarea no sea nulo
+        val tarea = intent.getStringExtra("TASK_INFO") ?: return  // Asegurarse de que el valor de la tarea no sea nulo
 
         // Mostrar los datos en los campos
         val descriptionEditText = findViewById<EditText>(R.id.descriptionEditText)
         val fechaInicioPicker = findViewById<DatePicker>(R.id.fechaInicio)
         val fechaFinPicker = findViewById<DatePicker>(R.id.fechaFin)
-        // Configurar el botón para guardar la información
-        val saveButton = findViewById<Button>(R.id.saveInfoButton)
+
         // Intentamos cargar la información de la tarea (si está disponible)
         val tareaInfo = getTareaInfo(tarea)
 
@@ -36,28 +34,18 @@ class InfoTareaActivity : AppCompatActivity() {
 
             val fechaInicio = it.fechaInicio.split("-")
             val fechaFin = it.fechaFin.split("-")
-            fechaInicioPicker.updateDate(
-                fechaInicio[2].toInt(),
-                fechaInicio[1].toInt() - 1,
-                fechaInicio[0].toInt()
-            )
-            fechaFinPicker.updateDate(
-                fechaFin[2].toInt(),
-                fechaFin[1].toInt() - 1,
-                fechaFin[0].toInt()
-            )
+            fechaInicioPicker.updateDate(fechaInicio[2].toInt(), fechaInicio[1].toInt() - 1, fechaInicio[0].toInt())
+            fechaFinPicker.updateDate(fechaFin[2].toInt(), fechaFin[1].toInt() - 1, fechaFin[0].toInt())
         }
 
-
+        // Configurar el botón para guardar la información
+        val saveButton = findViewById<Button>(R.id.saveInfoButton)
         saveButton.setOnClickListener {
             // Obtener los datos introducidos por el usuario
             val descripcion = descriptionEditText.text.toString()
-            val fechaInicio =
-                "${fechaInicioPicker.dayOfMonth}-${fechaInicioPicker.month + 1}-${fechaInicioPicker.year}"
-            val fechaFin =
-                "${fechaFinPicker.dayOfMonth}-${fechaFinPicker.month + 1}-${fechaFinPicker.year}"
-            val estado =
-                "Amarillo" // Este valor puede cambiar dependiendo del botón de estado que selecciones
+            val fechaInicio = "${fechaInicioPicker.dayOfMonth}-${fechaInicioPicker.month + 1}-${fechaInicioPicker.year}"
+            val fechaFin = "${fechaFinPicker.dayOfMonth}-${fechaFinPicker.month + 1}-${fechaFinPicker.year}"
+            val estado = "Amarillo" // Este valor puede cambiar dependiendo del botón de estado que selecciones
 
             // Guardar la información actualizada de la tarea
             val tareaInfo = TareaInfo(descripcion, fechaInicio, fechaFin, estado)

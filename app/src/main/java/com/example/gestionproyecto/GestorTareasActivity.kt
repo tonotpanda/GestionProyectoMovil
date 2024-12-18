@@ -98,7 +98,22 @@ class GestorTareasActivity : AppCompatActivity() {
             toColumn.add(tarea)
 
             // Notificar que se debe actualizar el RecyclerView
-            (recyclerView.adapter as ColumnAdapter).notifyDataSetChanged()  // Notificar que toda la vista debe actualizarse
+            (recyclerView.adapter as ColumnAdapter).notifyDataSetChanged()  // Actualizar toda la vista
+
+            // Puedes agregar una notificación o algún mensaje para informar al usuario
+            Toast.makeText(this, "Tarea movida a ${getColumnName(toColumnIndex)}", Toast.LENGTH_SHORT).show()
         }
     }
+
+    private fun getColumnName(index: Int): String {
+        return when (index) {
+            0 -> "Backlog"
+            1 -> "To Do"
+            2 -> "Doing"
+            3 -> "Testing"
+            4 -> "Finished"
+            else -> "Desconocido"
+        }
+    }
+
 }

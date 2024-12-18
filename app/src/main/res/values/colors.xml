@@ -9,9 +9,12 @@
     <color name="botonJson">#556080</color>
 
     // color estado tarea
-    <color name="amarillo">#FFCC00</color>
-    <color name="naranja">#FF8C00</color>
-    <color name="verde">#008000</color>
+    <color name="backlog">#FFEB3B</color> <!-- Amarillo -->
+    <color name="todo">#2196F3</color> <!-- azul -->
+    <color name="doing">#FF9800</color> <!-- Naranja -->
+    <color name="testing">#8BC34A</color> <!-- Verde claro -->
+    <color name="finished">#388E3C</color> <!-- Verde oscuro -->
+
 
 
 </resources>

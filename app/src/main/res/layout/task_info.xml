@@ -7,8 +7,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:gravity="center"
+        android:orientation="vertical"
         android:padding="16dp">
 
         <!-- Campo para la descripción de la tarea -->
@@ -36,8 +36,8 @@
                 android:layout_marginBottom="8dp"
                 android:fontFamily="@font/rockwell"
                 android:text="Fecha Inicio"
-                android:textSize="24sp"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                android:textSize="24sp" />
 
             <DatePicker
                 android:id="@+id/fechaInicio"
@@ -53,8 +53,8 @@
                 android:layout_marginBottom="8dp"
                 android:fontFamily="@font/rockwell"
                 android:text="Fecha Fin"
-                android:textSize="24sp"
-                android:textColor="@android:color/black" />
+                android:textColor="@android:color/black"
+                android:textSize="24sp" />
 
             <DatePicker
                 android:id="@+id/fechaFin"
@@ -62,55 +62,6 @@
                 android:layout_height="wrap_content" />
 
         </LinearLayout>
-
-        <!-- Botones para elegir el estado de la tarea -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/rockwell"
-                android:text="Estado tarea"
-                android:textSize="24sp"
-                android:textColor="@android:color/black"
-                android:layout_marginBottom="12dp" />
-
-            <Button
-                android:id="@+id/yellowButton"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:backgroundTint="@color/amarillo"
-                android:textColor="@android:color/white"
-                android:text="Empezando"
-                android:fontFamily="@font/merriweather" />
-
-            <Button
-                android:id="@+id/orangeButton"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:backgroundTint="@color/naranja"
-                android:textColor="@android:color/white"
-                android:text="En proceso"
-                android:fontFamily="@font/merriweather" />
-
-            <Button
-                android:id="@+id/greenButton"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:backgroundTint="@color/verde"
-                android:textColor="@android:color/white"
-                android:text="Finalizada"
-                android:fontFamily="@font/merriweather" />
-        </LinearLayout>
-
         <!-- Botón para guardar los datos -->
         <Button
             android:id="@+id/saveInfoButton"
