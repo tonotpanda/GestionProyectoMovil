@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp">
+    android:layout_margin="8dp"
+    android:gravity="center">
 
+    <!-- Fondo de la tarea con borde negro -->
     <TextView
         android:id="@+id/tareaText"
-        android:layout_width="200dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center_horizontal"
-        android:background="@color/background"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/border"
         android:fontFamily="@font/merriweather"
         android:gravity="center"
-        android:padding="16dp"
+        android:paddingStart="10dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="10dp"
         android:text="Tarea"
-        android:textSize="24sp"
-        />
-
-</LinearLayout>
+        android:textSize="24sp" />
+</FrameLayout>

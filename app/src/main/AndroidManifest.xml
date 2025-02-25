@@ -26,6 +26,8 @@
             android:exported="true"/>
         <activity android:name=".GestorTareasActivity"
             android:exported="true"/>
+        <activity android:name=".InfoTareaActivity"
+            android:exported="true"/>
     </application>
 
 </manifest>

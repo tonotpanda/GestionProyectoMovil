@@ -7,4 +7,14 @@
     <color name="red">#FF0000</color>
     <color name="background">#f2f2f2</color>
     <color name="botonJson">#556080</color>
+
+    // color estado tarea
+    <color name="backlog">#FFEB3B</color> <!-- Amarillo -->
+    <color name="todo">#2196F3</color> <!-- azul -->
+    <color name="doing">#FF9800</color> <!-- Naranja -->
+    <color name="testing">#8BC34A</color> <!-- Verde claro -->
+    <color name="finished">#388E3C</color> <!-- Verde oscuro -->
+
+
+
 </resources>

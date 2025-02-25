@@ -32,7 +32,7 @@
             android:layout_marginBottom="16dp"
             android:src="@drawable/fondo_intermodular" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSeleccionarJson"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
             android:fontFamily="@font/merriweather"
             android:text="Seleccionar JSON" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSalir"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

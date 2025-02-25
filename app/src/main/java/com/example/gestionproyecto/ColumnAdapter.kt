@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class ColumnAdapter(
     private val columnas: MutableList<MutableList<String>>,
-    private val onTaskClick: (String, Int) -> Unit  // Acepta la función onTaskClick
+    private val onTaskClick: (String, Int, Int) -> Unit  // Ahora recibe el índice de la tarea
 ) : RecyclerView.Adapter<ColumnAdapter.ColumnViewHolder>() {
 
     inner class ColumnViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -38,7 +38,7 @@ class ColumnAdapter(
         Log.d("ColumnAdapter", "Tareas en columna $columnName: ${columnas[position]}")
 
         // Configurar el RecyclerView para cada columna con las tareas correspondientes
-        val taskAdapter = TareaAdapter(columnas[position], onTaskClick) // Pasar la función aquí
+        val taskAdapter = TareaAdapter(columnas[position], position, onTaskClick)
         holder.recyclerView.layoutManager = LinearLayoutManager(holder.itemView.context)
         holder.recyclerView.adapter = taskAdapter
     }
@@ -48,5 +48,3 @@ class ColumnAdapter(
         return columnas.size
     }
 }
-
-
