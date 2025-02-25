@@ -1,5 +1,6 @@
 package com.example.gestionproyecto
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,11 +34,15 @@ class ColumnAdapter(
         }
         holder.columnTitle.text = columnName
 
+        // Verificar el contenido de la columna
+        Log.d("ColumnAdapter", "Tareas en columna $columnName: ${columnas[position]}")
+
         // Configurar el RecyclerView para cada columna con las tareas correspondientes
         val taskAdapter = TareaAdapter(columnas[position], onTaskClick) // Pasar la función aquí
         holder.recyclerView.layoutManager = LinearLayoutManager(holder.itemView.context)
         holder.recyclerView.adapter = taskAdapter
     }
+
 
     override fun getItemCount(): Int {
         return columnas.size

@@ -1,10 +1,10 @@
 package com.example.gestionproyecto
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
 class TareaAdapter(
@@ -17,6 +17,9 @@ class TareaAdapter(
 
         init {
             itemView.setOnClickListener {
+                // Log para verificar que el click está funcionando
+                Log.d("TareaAdapter", "Tarea clickeada: ${tareas[adapterPosition]}")
+
                 // Llamar a la función onTaskClick pasando la tarea y el índice de la columna
                 onTaskClick(tareas[adapterPosition], adapterPosition)
             }
@@ -29,6 +32,8 @@ class TareaAdapter(
     }
 
     override fun onBindViewHolder(holder: TareaViewHolder, position: Int) {
+        // Verificar que las tareas se estén mostrando correctamente
+        Log.d("TareaAdapter", "Mostrando tarea: ${tareas[position]}")
         holder.tareaText.text = tareas[position]
     }
 

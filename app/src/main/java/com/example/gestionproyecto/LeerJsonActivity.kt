@@ -9,49 +9,41 @@ import android.os.Bundle
 import android.util.Base64
 import android.widget.Button
 import android.widget.Toast
-import com.example.gestionproyecto.R
 import org.json.JSONArray
 import org.json.JSONException
-import org.json.JSONObject
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.io.IOException
 import javax.crypto.Cipher
-import javax.crypto.spec.SecretKeySpec
 import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.SecretKeySpec
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStreamReader
 
 class LeerJsonActivity : Activity() {
 
     private lateinit var btnSeleccionarJson: Button
     private lateinit var btnSalir: Button
 
-    // Clave y IV de desencriptación (deben ser los mismos usados para encriptar)
-    private val keyDecrypt = "0123456789012345"  // Clave de 16 bytes
-    private val ivDecrypt = "5432109876543210"  // IV de 16 bytes
+    private val keyDecrypt = "0123456789012345"
+    private val ivDecrypt = "5432109876543210"
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.leer_json_activity)
 
-        // Inicializamos los botones
         btnSeleccionarJson = findViewById(R.id.btnSeleccionarJson)
         btnSalir = findViewById(R.id.btnSalir)
 
-        // Evento de clic para seleccionar el archivo JSON
         btnSeleccionarJson.setOnClickListener {
-            // Abrir el selector de archivos
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-                type = "application/json"  // Solo archivos JSON
+                type = "application/json"
                 addCategory(Intent.CATEGORY_OPENABLE)
             }
-            // Usamos el resultado de la actividad para obtener el archivo seleccionado
             startActivityForResult(intent, PICK_JSON_FILE)
         }
 
-        // Evento de clic para salir
         btnSalir.setOnClickListener {
-            finish() // Cerrar la aplicación
+            finish()
         }
     }
 
@@ -59,13 +51,13 @@ class LeerJsonActivity : Activity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == PICK_JSON_FILE && resultCode == RESULT_OK) {
-            val fileUri: Uri? = data?.data // Obtener la URI del archivo JSON seleccionado
+            val fileUri: Uri? = data?.data
 
             fileUri?.let {
                 try {
-                    val jsonContent = readFile(it) // Leer el contenido del archivo JSON
-                    val jsonDesencriptado = decryptJson(jsonContent) // Desencriptar el JSON
-                    parseJson(jsonDesencriptado) // Parsear el contenido JSON desencriptado
+                    val jsonContent = readFile(it)
+                    val jsonDesencriptado = decryptJson(jsonContent)
+                    parseJson(jsonDesencriptado)
                 } catch (e: IOException) {
                     e.printStackTrace()
                     Toast.makeText(this, "Error al leer el archivo", Toast.LENGTH_SHORT).show()
@@ -74,7 +66,6 @@ class LeerJsonActivity : Activity() {
         }
     }
 
-    // Método para leer el contenido del archivo JSON
     @Throws(IOException::class)
     private fun readFile(fileUri: Uri): String {
         val inputStream = contentResolver.openInputStream(fileUri)
@@ -88,25 +79,15 @@ class LeerJsonActivity : Activity() {
         return stringBuilder.toString()
     }
 
-    // Función para desencriptar el JSON (AES CBC)
     private fun decryptJson(encryptedJson: String): String {
         try {
-            // Decodificar el contenido Base64
             val encryptedData = Base64.decode(encryptedJson, Base64.DEFAULT)
-
-            // Extraer IV y texto cifrado
             val iv = IvParameterSpec(ivDecrypt.toByteArray())
-            val cipherText = encryptedData.copyOfRange(16, encryptedData.size) // Excluir el IV de los primeros 16 bytes
-
-            // Crear la clave de desencriptación
+            val cipherText = encryptedData.copyOfRange(16, encryptedData.size)
             val keySpec = SecretKeySpec(keyDecrypt.toByteArray(), "AES")
-
-            // Inicializar el cifrador y desencriptar
             val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
             cipher.init(Cipher.DECRYPT_MODE, keySpec, iv)
             val decryptedBytes = cipher.doFinal(cipherText)
-
-            // Convertir los bytes desencriptados a string y retornar
             return String(decryptedBytes)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -115,11 +96,9 @@ class LeerJsonActivity : Activity() {
         }
     }
 
-    // Método para parsear el JSON desencriptado
     private fun parseJson(jsonContent: String) {
         try {
             val jsonArray = JSONArray(jsonContent)
-
             val proyectoNames = mutableListOf<String>()
             for (i in 0 until jsonArray.length()) {
                 val jsonObject = jsonArray.getJSONObject(i)
@@ -127,34 +106,37 @@ class LeerJsonActivity : Activity() {
                 proyectoNames.add(nombreProyecto)
             }
 
-            // Mostrar un diálogo para seleccionar el proyecto
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Selecciona un Proyecto")
             builder.setItems(proyectoNames.toTypedArray()) { dialog, which ->
-                // Obtener el proyecto seleccionado
                 val selectedProject = jsonArray.getJSONObject(which)
-
-                // Extraer la información del proyecto seleccionado
                 val nombreProyecto = selectedProject.getString("NombreProyecto")
-                val tareas = getJSONArrayAsString(selectedProject, "Tareas")
-                val subtareas = getJSONArrayAsString(selectedProject, "SubTareas")
-                val listaUsuarios = getJSONArrayAsString(selectedProject, "ListaUsuarios")
+                val tareas = mutableListOf<Tareas>()
+                val tareasArray = selectedProject.getJSONArray("Tareas")
+                for (j in 0 until tareasArray.length()) {
+                    val tareaObject = tareasArray.getJSONObject(j)
+                    val nombreTarea = tareaObject.getString("NombreTarea")
+                    val subtareas = mutableListOf<String>()
+                    val subtareasArray = tareaObject.getJSONArray("Subtareas")
+                    for (k in 0 until subtareasArray.length()) {
+                        subtareas.add(subtareasArray.getString(k))
+                    }
+                    tareas.add(Tareas(nombreTarea, subtareas))
+                }
+
+                val usuarios = mutableListOf<String>()
+                val usuariosArray = selectedProject.getJSONArray("Usuarios")
+                for (j in 0 until usuariosArray.length()) {
+                    usuarios.add(usuariosArray.getString(j))
+                }
+
                 val fechaInicio = selectedProject.getString("FechaInicio")
                 val fechaFin = selectedProject.getString("FechaFin")
 
-                // Crear una instancia del objeto Proyecto
-                val proyecto = Proyecto(
-                    nombreProyecto,
-                    tareas.split(", "),  // Convertir la cadena a lista
-                    subtareas.split(", "),  // Convertir la cadena a lista
-                    listaUsuarios.split(", "),  // Convertir la cadena a lista
-                    fechaInicio,
-                    fechaFin
-                )
+                val proyecto = Proyecto(nombreProyecto, tareas, fechaInicio, fechaFin, usuarios)
 
-                // Enviar los datos a la nueva actividad
                 val intent = Intent(this, GestorTareasActivity::class.java)
-                intent.putExtra("PROYECTO_INFO", proyecto)  // Asegúrate de que "PROYECTO_INFO" sea correcto
+                intent.putExtra("PROYECTO_INFO", proyecto)
                 startActivity(intent)
             }
 
@@ -166,23 +148,7 @@ class LeerJsonActivity : Activity() {
         }
     }
 
-    // Función para convertir JSONArray a una cadena de texto
-    private fun getJSONArrayAsString(jsonObject: JSONObject, key: String): String {
-        return try {
-            val jsonArray = jsonObject.getJSONArray(key) // Intentamos obtener el JSONArray
-            val list = mutableListOf<String>()
-            for (i in 0 until jsonArray.length()) {
-                list.add(jsonArray.getString(i))
-            }
-            list.joinToString(", ") // Convertimos el JSONArray en una cadena de texto
-        } catch (e: JSONException) {
-            // Si hay un error (lo que significa que el valor no es un JSONArray), lo tratamos como un String
-            jsonObject.getString(key)
-        }
-    }
-
     companion object {
         const val PICK_JSON_FILE = 1
     }
 }
-

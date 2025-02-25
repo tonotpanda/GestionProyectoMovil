@@ -15,8 +15,6 @@ class GestorTareasActivity : AppCompatActivity() {
     private val doing = mutableListOf<String>()
     private val testing = mutableListOf<String>()
     private val finished = mutableListOf<String>()
-
-    // Lista de columnas donde cada una contiene tareas
     private val columnas = mutableListOf(backlog, toDo, doing, testing, finished)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,30 +24,31 @@ class GestorTareasActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
-        // Obtener el objeto Proyecto pasado desde la actividad anterior
         val proyecto = intent.getSerializableExtra("PROYECTO_INFO") as Proyecto
 
-        // Mostrar la información del proyecto
-        findViewById<TextView>(R.id.projectName).text = proyecto.nombreProyecto
-        findViewById<TextView>(R.id.projectDates).text = "Fecha inicio: ${proyecto.fechaInicio}\nFecha fin: ${proyecto.fechaFin}"
-        findViewById<TextView>(R.id.projectSupervisor).text = "Supervisado por: ${proyecto.listaUsuarios.first()}" // Mostrar primer usuario
+        findViewById<TextView>(R.id.projectName).text = proyecto.NombreProyecto
+        findViewById<TextView>(R.id.projectDates).text = "Fecha inicio: ${proyecto.FechaInicio}\nFecha fin: ${proyecto.FechaFin}"
+        findViewById<TextView>(R.id.projectSupervisor).text = "Supervisado por: ${proyecto.Usuarios.first()}"
 
-        // Llenar el Backlog con tareas y subtareas
-        backlog.addAll(proyecto.tareas)
-        backlog.addAll(proyecto.subtareas)
+        llenarColumnasConTareas(proyecto.Tareas)
 
-        // Configurar el Adapter
-        val columnAdapter = ColumnAdapter(columnas, ::onTaskClick)  // Pasa la función al adaptador
+        val columnAdapter = ColumnAdapter(columnas, ::onTaskClick)
         recyclerView.adapter = columnAdapter
     }
 
-    // Función que se llama cuando se hace clic en una tarea
+    private fun llenarColumnasConTareas(tareas: List<Tareas>) {
+        tareas.forEach { tarea ->
+            backlog.add(tarea.NombreTarea)
+            tarea.Subtareas.forEach { subtarea ->
+                backlog.add(subtarea)
+            }
+        }
+    }
+
     private fun onTaskClick(tarea: String, fromColumnIndex: Int) {
-        // Mostrar un PopupMenu para que el usuario elija la columna
         val popupMenu = PopupMenu(this, findViewById(R.id.recyclerView))
         popupMenu.menuInflater.inflate(R.menu.column_menu, popupMenu.menu)
 
-        // Lógica para manejar la selección del menú
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.move_to_backlog -> moveTask(tarea, fromColumnIndex, 0)
@@ -61,22 +60,16 @@ class GestorTareasActivity : AppCompatActivity() {
             true
         }
 
-        // Mostrar el menú
         popupMenu.show()
     }
 
-    // Función que mueve la tarea de una columna a otra
     private fun moveTask(tarea: String, fromColumnIndex: Int, toColumnIndex: Int) {
         val fromColumn = columnas[fromColumnIndex]
         val toColumn = columnas[toColumnIndex]
 
-        // Eliminar la tarea de la columna de origen
         fromColumn.remove(tarea)
-
-        // Agregar la tarea a la columna de destino
         toColumn.add(tarea)
 
-        // Notificar al adaptador que se ha movido la tarea
         (recyclerView.adapter as ColumnAdapter).notifyDataSetChanged()
     }
 }
