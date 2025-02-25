@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlin.reflect.KFunction2
+import kotlin.reflect.KFunction3
 
 class ColumnAdapter(
     private val columnas: MutableList<MutableList<String>>,
-    private val onTaskClick: KFunction2<String, Int, Unit>  // Ahora recibe el índice de la tarea
+    private val onTaskClick: KFunction3<String, Int, View, Unit>  // Ahora recibe el índice de la tarea
 ) : RecyclerView.Adapter<ColumnAdapter.ColumnViewHolder>() {
 
     inner class ColumnViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

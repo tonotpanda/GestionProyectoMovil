@@ -1,6 +1,7 @@
 package com.example.gestionproyecto
 
 import android.os.Bundle
+import android.view.View
 import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -45,8 +46,9 @@ class GestorTareasActivity : AppCompatActivity() {
         }
     }
 
-    private fun onTaskClick(tarea: String, fromColumnIndex: Int) {
-        val popupMenu = PopupMenu(this, findViewById(R.id.recyclerView))
+    private fun onTaskClick(tarea: String, fromColumnIndex: Int, view: View) {
+        // Crear el PopupMenu y anclarlo al View que se hizo clic
+        val popupMenu = PopupMenu(this, view)
         popupMenu.menuInflater.inflate(R.menu.column_menu, popupMenu.menu)
 
         popupMenu.setOnMenuItemClickListener { item ->
@@ -60,16 +62,22 @@ class GestorTareasActivity : AppCompatActivity() {
             true
         }
 
+        // Mostrar el PopupMenu
         popupMenu.show()
     }
 
     private fun moveTask(tarea: String, fromColumnIndex: Int, toColumnIndex: Int) {
+        // Obtener las columnas de origen y destino
         val fromColumn = columnas[fromColumnIndex]
         val toColumn = columnas[toColumnIndex]
 
+        // Eliminar la tarea de la columna de origen
         fromColumn.remove(tarea)
+
+        // Agregar la tarea a la columna de destino
         toColumn.add(tarea)
 
-        (recyclerView.adapter as ColumnAdapter).notifyDataSetChanged()
+        // Notificar al adaptador que los datos han cambiado
+        recyclerView.adapter?.notifyDataSetChanged()
     }
 }

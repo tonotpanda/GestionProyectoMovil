@@ -1,6 +1,5 @@
 package com.example.gestionproyecto
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,8 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 
 class TareaAdapter(
     private val tareas: MutableList<String>,
-    position: Int,
-    private val onTaskClick: (String, Int) -> Unit  // Recibe la función de click){}
+    private val columnIndex: Int,  // Índice de la columna
+    private val onTaskClick: (String, Int, View) -> Unit  // Recibe la función de click
 ) : RecyclerView.Adapter<TareaAdapter.TareaViewHolder>() {
 
     inner class TareaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -18,11 +17,8 @@ class TareaAdapter(
 
         init {
             itemView.setOnClickListener {
-                // Log para verificar que el click está funcionando
-                Log.d("TareaAdapter", "Tarea clickeada: ${tareas[adapterPosition]}")
-
-                // Llamar a la función onTaskClick pasando la tarea y el índice de la columna
-                onTaskClick(tareas[adapterPosition], adapterPosition)
+                // Llamar a la función onTaskClick pasando la tarea, el índice de la columna y la vista
+                onTaskClick(tareas[adapterPosition], columnIndex, itemView)
             }
         }
     }
@@ -33,8 +29,6 @@ class TareaAdapter(
     }
 
     override fun onBindViewHolder(holder: TareaViewHolder, position: Int) {
-        // Verificar que las tareas se estén mostrando correctamente
-        Log.d("TareaAdapter", "Mostrando tarea: ${tareas[position]}")
         holder.tareaText.text = tareas[position]
     }
 
