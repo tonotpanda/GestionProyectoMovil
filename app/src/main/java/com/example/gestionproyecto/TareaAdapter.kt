@@ -9,7 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 
 class TareaAdapter(
     private val tareas: MutableList<String>,
-    private val onTaskClick: (String, Int) -> Unit  // Recibe la función de click
+    position: Int,
+    private val onTaskClick: (String, Int) -> Unit  // Recibe la función de click){}
 ) : RecyclerView.Adapter<TareaAdapter.TareaViewHolder>() {
 
     inner class TareaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
